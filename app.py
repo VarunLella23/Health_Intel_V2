@@ -4,6 +4,7 @@ from filters import datetimeformat
 import pandas as pd
 import numpy as np
 import joblib
+import os
 
 app = Flask(__name__)
 app.jinja_env.filters['datetimeformat'] = datetimeformat
@@ -38,7 +39,7 @@ def diabetes():
             features = [float(request.form[col]) for col in [
                 'Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness',
                 'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age']]
-            
+
             prediction = diabetes_model.predict([features])[0]
             return "Diabetic" if prediction == 1 else "Not Diabetic"
         
@@ -53,7 +54,7 @@ def heart_prediction():
         try:
             # Get input data
             data = request.get_json() if request.is_json else request.form.to_dict()
-            
+
             # Create DataFrame with explicit type conversion
             input_df = pd.DataFrame([{
                 # Numerical features
@@ -82,7 +83,7 @@ def heart_prediction():
 
             # Make prediction
             prediction = heart_pipeline.predict(input_df)[0]
-            
+
             return jsonify({
                 'prediction': 'High Risk' if prediction == 1 else 'Low Risk',
                 'status': 'success'
@@ -93,8 +94,9 @@ def heart_prediction():
                 'error': f'Prediction failed: {str(e)}',
                 'status': 'error'
             }), 400
-    
+
     return render_template('heart.html')
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    # Run the app on the correct host and port
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
