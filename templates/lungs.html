@@ -75,17 +75,16 @@
 
             <div class="input-group">
                 <label for="fatigue">Fatigue</label>
-                <select id="fatigue" name="FATIGUE" required>
+                <select id="fatigue" name="FATIGUE " required>  
                     <option value="">Select</option>
                     <option value="1">Yes</option>
                     <option value="0">No</option>
                 </select>
             </div>
-
-            <!-- Column 2 -->
+            
             <div class="input-group">
                 <label for="allergy">Allergy</label>
-                <select id="allergy" name="ALLERGY" required>
+                <select id="allergy" name="ALLERGY " required>  
                     <option value="">Select</option>
                     <option value="1">Yes</option>
                     <option value="0">No</option>
@@ -156,28 +155,35 @@
             
             const formData = new FormData(e.target);
             const data = {};
-            formData.forEach((value, key) => data[key] = parseInt(value));
-
+            formData.forEach((value, key) => {
+                // Convert to integers (no need to exclude ANXYELFIN as it's not in the form)
+                data[key] = value === '1' ? 1 : 0;
+            });
+        
             try {
-                const response = await fetch('/lung', {
+                const response = await fetch('/lungs', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
                 });
-
+        
                 const result = await response.json();
                 const resultDiv = document.getElementById('result');
                 
-                resultDiv.innerHTML = `<h2>Prediction: ${result.prediction}</h2>`;
+                if (!response.ok) {
+                    resultDiv.innerHTML = `<h2>Error: ${result.error}</h2>`;
+                    resultDiv.className = 'high-risk';
+                } else {
+                    resultDiv.innerHTML = `<h2>Prediction: ${result.prediction}</h2>`;
+                    resultDiv.className = result.prediction === 'High Risk' ? 'high-risk' : 'low-risk';
+                }
                 resultDiv.style.display = 'block';
-                resultDiv.className = result.prediction === 'High Risk' ? 'high-risk' : 'low-risk';
-                
+        
             } catch (error) {
-                console.error('Error:', error);
                 const resultDiv = document.getElementById('result');
                 resultDiv.innerHTML = `<h2>Error: ${error.message}</h2>`;
-                resultDiv.style.display = 'block';
                 resultDiv.className = 'high-risk';
+                resultDiv.style.display = 'block';
             }
         });
     </script>
