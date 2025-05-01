@@ -11,7 +11,8 @@ app.jinja_env.filters['datetimeformat'] = datetimeformat
 
 # Load models
 diabetes_model = joblib.load('diabetes.pkl')
-heart_pipeline = joblib.load('heart_model.pkl')  # Contains complete pipeline
+heart_pipeline = joblib.load('heart_model.pkl')
+lung_model = joblib.load('lungs.pkl')    
 
 @app.route('/')
 def home():
@@ -52,19 +53,14 @@ def diabetes():
 def heart_prediction():
     if request.method == 'POST':
         try:
-            # Get input data
             data = request.get_json() if request.is_json else request.form.to_dict()
 
-            # Create DataFrame with explicit type conversion
             input_df = pd.DataFrame([{
-                # Numerical features
                 'age': float(data.get('age', 0)),
                 'trestbps': float(data.get('trestbps', 0)),
                 'chol': float(data.get('chol', 0)),
                 'thalach': float(data.get('thalach', 0)),
                 'oldpeak': float(data.get('oldpeak', 0)),
-                
-                # Categorical features
                 'sex': int(data.get('sex', 0)),
                 'cp': int(data.get('cp', 0)),
                 'fbs': int(data.get('fbs', 0)),
@@ -75,13 +71,11 @@ def heart_prediction():
                 'thal': int(data.get('thal', 0))
             }])
 
-            # Ensure correct column order
             input_df = input_df[[
                 'age', 'trestbps', 'chol', 'thalach', 'oldpeak',
                 'sex', 'cp', 'fbs', 'restecg', 'exang', 'slope', 'ca', 'thal'
             ]]
 
-            # Make prediction
             prediction = heart_pipeline.predict(input_df)[0]
 
             return jsonify({
@@ -97,6 +91,36 @@ def heart_prediction():
 
     return render_template('heart.html')
 
+@app.route('/lungs', methods=['GET', 'POST'])
+def lung_prediction():
+    if request.method == 'POST':
+        try:
+            data = request.get_json()
+            features = [int(data.get(col, 0)) for col in [
+                'YELLOW_FINGERS', 'ANXIETY', 'PEER_PRESSURE', 'CHRONIC_DISEASE',
+                'FATIGUE', 'ALLERGY', 'WHEEZING', 'ALCOHOL_CONSUMING',
+                'COUGHING', 'SWALLOWING_DIFFICULTY', 'CHEST_PAIN'
+            ]]
+
+            input_df = pd.DataFrame([features], columns=[
+                'YELLOW_FINGERS', 'ANXIETY', 'PEER_PRESSURE', 'CHRONIC_DISEASE',
+                'FATIGUE', 'ALLERGY', 'WHEEZING', 'ALCOHOL_CONSUMING',
+                'COUGHING', 'SWALLOWING_DIFFICULTY', 'CHEST_PAIN'
+            ])
+
+            prediction = lung_model.predict(input_df)[0]
+            return jsonify({
+                'prediction': 'High Risk' if prediction == 1 else 'Low Risk',
+                'status': 'success'
+            })
+        
+        except Exception as e:
+            return jsonify({
+                'error': f'Lung prediction failed: {str(e)}',
+                'status': 'error'
+            }), 400
+
+    return render_template('lungs.html')
+
 if __name__ == "__main__":
-    # Run the app on the correct host and port
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))

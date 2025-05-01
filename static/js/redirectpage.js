@@ -12,7 +12,7 @@ const bodySystems = [
         name: 'Lungs',
         icon: '<i class="fas fa-lungs"></i>',
         diseases: [
-            { name: 'Pneumonia', path: 'lungs-pneumonia.html' },
+            { name: 'Lung Cancer', path: '/lungs' },
             { name: 'COPD', path: 'lungs-copd.html' },
             { name: 'Asthma', path: 'lungs-asthma.html' }
         ]
