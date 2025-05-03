@@ -21,8 +21,8 @@ const bodySystems = [
         name: 'Liver',
         icon: '<i class="fas fa-bacteria"></i>',
         diseases: [
+            { name: 'Liver Cancer', path: '/liver' },
             { name: 'Cirrhosis', path: 'liver-cirrhosis.html' },
-            { name: 'Hepatitis', path: 'liver-hepatitis.html' },
             { name: 'Fatty Liver', path: 'liver-fatty.html' }
         ]
     },
