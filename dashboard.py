@@ -3,7 +3,7 @@ import pytz
 import logging
 from datetime import timezone
 from typing import Dict, List, Union
-from auth.auth import authenticate_google_fit
+# from auth.auth import authenticate_google_fit
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
