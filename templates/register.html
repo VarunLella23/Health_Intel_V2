@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #ff4b2b, #ff416c);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: rgba(0, 0, 0, 0.2);
+      padding: 2rem;
+      border-radius: 12px;
+      width: 300px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+    h2 {
+      text-align: center;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 6px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #fff;
+      color: #ff416c;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .link {
+      text-align: center;
+      margin-top: 10px;
+    }
+    .link a {
+      color: #fff;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Register</h2>
+    <input type="text" id="reg-email" placeholder="Email or Username" />
+    <input type="password" id="reg-password" placeholder="Password" />
+    <select id="reg-role">
+      <option value="patient">Patient</option>
+      <option value="doctor">Doctor</option>
+    </select>
+    <button onclick="register()">Register</button>
+    <div class="link">
+      Already have an account? <a href="login.html">Login</a>
+    </div>
+  </div>
+  <script>
+    function register() {
+      const email = document.getElementById('reg-email').value;
+      const password = document.getElementById('reg-password').value;
+      const role = document.getElementById('reg-role').value;
+
+      const user = { email, password, role };
+      localStorage.setItem(email, JSON.stringify(user));
+      alert("Registered successfully!");
+      window.location.href = 'login.html';
+    }
+  </script>
+</body>
+</html>

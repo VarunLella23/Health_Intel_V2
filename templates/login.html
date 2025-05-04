@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: rgba(0, 0, 0, 0.2);
+      padding: 2rem;
+      border-radius: 12px;
+      width: 300px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+    h2 {
+      text-align: center;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 6px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #fff;
+      color: #0072ff;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .link {
+      text-align: center;
+      margin-top: 10px;
+    }
+    .link a {
+      color: #fff;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Login</h2>
+    <input type="text" id="login-email" placeholder="Email or Username" />
+    <input type="password" id="login-password" placeholder="Password" />
+    <button onclick="login()">Login</button>
+    <div class="link">
+      Don't have an account? <a href="register.html">Register</a>
+    </div>
+  </div>
+  <script>
+    function login() {
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      const user = JSON.parse(localStorage.getItem(email));
+
+      if (user && user.password === password) {
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        window.location.href = 'homepage.html';
+      } else {
+        alert("Invalid credentials!");
+      }
+    }
+  </script>
+</body>
+</html>
