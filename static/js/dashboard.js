@@ -1,58 +1,81 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // Animate progress bars on initial load
-    document.querySelectorAll('.progress-fill').forEach(progressBar => {
-        const targetWidth = progressBar.style.width;
-        progressBar.style.width = '0';
-        setTimeout(() => {
-            progressBar.style.width = targetWidth;
-        }, 500);
+class Dashboard {
+    constructor() {
+      this.initialize();
+    }
+  
+    initialize() {
+      this.setupEventListeners();
+      this.animateElements();
+      this.initializeClock();
+      this.observePerformance();
+    }
+  
+    setupEventListeners() {
+      // Use event delegation for better performance
+      document.body.addEventListener('mouseover', this.handleHover.bind(this));
+    }
+  
+    animateElements() {
+      const animateProgressBar = (element) => {
+        const targetWidth = element.dataset.width;
+        element.style.width = '0';
+        requestAnimationFrame(() => {
+          element.style.width = targetWidth;
+        });
+      };
+  
+      document.querySelectorAll('.progress-fill').forEach(animateProgressBar);
+    }
+  
+    handleHover(event) {
+      const card = event.target.closest('.card');
+      if (card) {
+        card.classList.toggle('hover-state', event.type === 'mouseenter');
+      }
+    }
+  
+    initializeClock() {
+      const clock = document.createElement('div');
+      clock.id = 'live-clock';
+      document.body.appendChild(clock);
+      
+      this.updateClock();
+      setInterval(this.updateClock.bind(this), 1000);
+    }
+  
+    updateClock() {
+      const options = {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+      };
+      document.getElementById('live-clock').textContent = 
+        new Date().toLocaleTimeString('en-US', options);
+    }
+  
+    observePerformance() {
+      if ('PerformanceObserver' in window) {
+        const observer = new PerformanceObserver((list) => {
+          for (const entry of list.getEntries()) {
+            console.log('[Performance]', entry.name, entry.duration);
+          }
+        });
+        observer.observe({ entryTypes: ['measure', 'resource'] });
+      }
+    }
+  }
+  
+  // Initialize when DOM is ready
+  document.addEventListener('DOMContentLoaded', () => {
+    new Dashboard();
+    // Remove loading state
+    document.querySelector('.loading-overlay').remove();
+  });
+  
+  // Register service worker
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js');
     });
-
-    // Add hover effects to cards
-    document.querySelectorAll('.card').forEach(card => {
-        card.addEventListener('mouseenter', () => {
-            card.style.boxShadow = '0 8px 12px -2px rgba(0, 0, 0, 0.2)';
-        });
-        
-        card.addEventListener('mouseleave', () => {
-            card.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1)';
-        });
-    });
-
-    // Add animation to table rows
-    document.querySelectorAll('.activities-table tr').forEach(row => {
-        row.addEventListener('mouseenter', () => {
-            row.style.transform = 'translateX(10px)';
-            row.style.transition = 'transform 0.3s ease';
-        });
-        
-        row.addEventListener('mouseleave', () => {
-            row.style.transform = 'translateX(0)';
-        });
-    });
-});
-
-// Real-time clock function
-function updateLiveClock() {
-    const clockElement = document.createElement('div');
-    clockElement.id = 'live-clock';
-    clockElement.style.position = 'fixed';
-    clockElement.style.bottom = '20px';
-    clockElement.style.right = '20px';
-    clockElement.style.background = 'var(--card-bg)';
-    clockElement.style.padding = '10px 20px';
-    clockElement.style.borderRadius = '8px';
-    clockElement.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
-    document.body.appendChild(clockElement);
-
-    setInterval(() => {
-        const now = new Date();
-        clockElement.textContent = now.toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
-        });
-    }, 1000);
-}
-
-updateLiveClock();
+  }

@@ -31,13 +31,14 @@ body {
     margin-bottom: 2rem;
 }
 
+/* Fixed gradient text implementation */
 .header h1 {
     font-size: 2.5rem;
     margin-bottom: 0.5rem;
     background: linear-gradient(45deg, var(--primary), var(--secondary));
-    background-clip: var(--text);
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+            background-clip: text;
+    color: transparent;
 }
 
 .time-range p {
@@ -91,9 +92,9 @@ body {
     font-weight: 700;
     margin: 0.5rem 0;
     background: linear-gradient(45deg, var(--primary), var(--secondary));
-    background-clip: var(--text);
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+            background-clip: text;
+    color: transparent;
     z-index: 1;
 }
 
@@ -110,6 +111,7 @@ body {
     height: 100%;
     background: linear-gradient(90deg, var(--primary), var(--secondary));
     transition: width 0.5s ease;
+    width: 0;
 }
 
 .full-width-card {
@@ -170,6 +172,7 @@ body {
     color: var(--primary);
 }
 
+/* Fixed media query syntax */
 @media (max-width: 768px) {
     .dashboard-container {
         grid-template-columns: 1fr;
@@ -177,6 +180,10 @@ body {
     }
     
     .header h1 {
+        font-size: 2rem;
+    }
+    
+    .metric-value {
         font-size: 2rem;
     }
 }

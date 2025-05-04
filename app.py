@@ -6,6 +6,21 @@ import pandas as pd
 import numpy as np
 import joblib
 import os
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
+app = Flask(__name__)
+app.config.update(
+    SECRET_KEY=os.environ['FLASK_SECRET_KEY'],
+    SESSION_COOKIE_SECURE=True,
+    SESSION_COOKIE_HTTPONLY=True,
+    PERMANENT_SESSION_LIFETIME=3600
+)
 
 app = Flask(__name__)
 app.jinja_env.filters['datetimeformat'] = datetimeformat
@@ -31,6 +46,10 @@ def dashboard():
         success=fitness_data.get('success', False),
         error=fitness_data.get('error', None)
     )
+
+@app.route('/dashboard')
+def dashbaord():
+    return render_template('dashboard.html')
 
 @app.route('/predict')
 def predict():
