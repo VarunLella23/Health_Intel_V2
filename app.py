@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.config.update(
-    SECRET_KEY=os.environ['FLASK_SECRET_KEY'],
+    SECRET_KEY=os.environ['FLASK_SECRET_KEY','dev-secret-key'],
     SESSION_COOKIE_SECURE=True,
     SESSION_COOKIE_HTTPONLY=True,
     PERMANENT_SESSION_LIFETIME=3600
