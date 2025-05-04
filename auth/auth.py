@@ -5,6 +5,7 @@ from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import Flow
 from functools import wraps
+import pickle
 
 # Configure Flask app
 app = Flask(__name__)
@@ -32,6 +33,12 @@ CLIENT_CONFIG = {
         "redirect_uris": [REDIRECT_URI]
     }
 }
+
+def authenticate_google_fit():
+    creds = None
+    if os.path.exists('token.pickle'):
+        with open('token.pickle', 'rb') as token:
+            creds = pickle.load(token)
 
 def credentials_to_dict(credentials):
     return {
